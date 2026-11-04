@@ -1,0 +1,25 @@
+.venv/
+.scratch/
+__pycache__/
+*.egg-info
+.pytest_cache/
+MUJOCO_LOG.TXT
+!results/
+results/*
+!results/prereg/
+!results/figures/
+!results/media/
+!results/p2d/
+results/p2d/*
+!results/p2d/best.json
+# third-party PDFs are not redistributed
+docs/refs/*.pdf
+# LaTeX build files
+*.aux
+*.log
+*.fls
+*.fdb_latexmk
+*.out
+*.blg
+*.bbl
+*.synctex.gz

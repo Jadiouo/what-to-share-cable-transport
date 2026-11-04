@@ -1,0 +1,51 @@
+variant,test_id,hyp,s,traj,n,mean_diff_cm,p_onesided,p_holm_adj,rejected,ci90_lo,ci90_hi,note
+a_p2d_rm_rule,H1a|s=0|circle|sp1.0,H1a,0,circle,40,0.118234,0.841792,0.841792,False,-0.0553765,0.309245,受影響集數(全部載入的集中 success=False 且 rmse<=1m)=35
+a_p2d_rm_rule,H1b|s=0|circle|sp1.0,H1b,0,circle,40,-0.640644,9.9999e-06,0.000199998,True,-0.864552,-0.432126,受影響集數(全部載入的集中 success=False 且 rmse<=1m)=35
+a_p2d_rm_rule,H1a|s=0.5|circle|sp1.0,H1a,0.5,circle,40,-0.378087,0.000849992,0.0101999,True,-0.564721,-0.193076,受影響集數(全部載入的集中 success=False 且 rmse<=1m)=35
+a_p2d_rm_rule,H1b|s=0.5|circle|sp1.0,H1b,0.5,circle,40,-0.250285,6.99993e-05,0.00125999,True,-0.364979,-0.146142,受影響集數(全部載入的集中 success=False 且 rmse<=1m)=35
+a_p2d_rm_rule,H1a|s=1|circle|sp1.0,H1a,1,circle,40,-0.383787,0.00469995,0.0328997,True,-0.612929,-0.156895,受影響集數(全部載入的集中 success=False 且 rmse<=1m)=35
+a_p2d_rm_rule,H1b|s=1|circle|sp1.0,H1b,1,circle,40,-0.160129,0.00379996,0.0303997,True,-0.255079,-0.0692029,受影響集數(全部載入的集中 success=False 且 rmse<=1m)=35
+a_p2d_rm_rule,H1a|s=1.75|circle|sp1.0,H1a,1.75,circle,40,-0.502775,0.00180998,0.0199098,True,-0.772276,-0.239477,受影響集數(全部載入的集中 success=False 且 rmse<=1m)=35
+a_p2d_rm_rule,H1b|s=1.75|circle|sp1.0,H1b,1.75,circle,40,-0.158099,0.0467895,0.187158,False,-0.311982,-0.0161963,受影響集數(全部載入的集中 success=False 且 rmse<=1m)=35
+a_p2d_rm_rule,H1a|s=2.5|circle|sp1.0,H1a,2.5,circle,40,-0.648966,0.000259997,0.00389996,True,-0.937629,-0.368673,受影響集數(全部載入的集中 success=False 且 rmse<=1m)=35
+a_p2d_rm_rule,H1b|s=2.5|circle|sp1.0,H1b,2.5,circle,40,-0.188932,0.0683193,0.204958,False,-0.395263,-0.000206404,受影響集數(全部載入的集中 success=False 且 rmse<=1m)=35
+a_p2d_rm_rule,H1a|s=0|fig8|sp1.0,H1a,0,fig8,40,-0.0476501,0.354876,0.709753,False,-0.2394,0.15525,受影響集數(全部載入的集中 success=False 且 rmse<=1m)=35
+a_p2d_rm_rule,H1b|s=0|fig8|sp1.0,H1b,0,fig8,40,-0.520367,0.000129999,0.00220998,True,-0.764044,-0.29141,受影響集數(全部載入的集中 success=False 且 rmse<=1m)=35
+a_p2d_rm_rule,H1a|s=0.5|fig8|sp1.0,H1a,0.5,fig8,40,-0.469659,5.99994e-05,0.00113999,True,-0.656578,-0.28231,受影響集數(全部載入的集中 success=False 且 rmse<=1m)=35
+a_p2d_rm_rule,H1b|s=0.5|fig8|sp1.0,H1b,0.5,fig8,40,-0.206535,0.000529995,0.00688993,True,-0.304891,-0.109885,受影響集數(全部載入的集中 success=False 且 rmse<=1m)=35
+a_p2d_rm_rule,H1a|s=1|fig8|sp1.0,H1a,1,fig8,40,-0.419028,0.00240998,0.0216898,True,-0.650675,-0.190709,受影響集數(全部載入的集中 success=False 且 rmse<=1m)=35
+a_p2d_rm_rule,H1b|s=1|fig8|sp1.0,H1b,1,fig8,40,-0.204469,0.000289997,0.00405996,True,-0.298378,-0.114141,受影響集數(全部載入的集中 success=False 且 rmse<=1m)=35
+a_p2d_rm_rule,H1a|s=1.75|fig8|sp1.0,H1a,1.75,fig8,40,-0.512992,0.00190998,0.0199098,True,-0.789286,-0.238334,受影響集數(全部載入的集中 success=False 且 rmse<=1m)=35
+a_p2d_rm_rule,H1b|s=1.75|fig8|sp1.0,H1b,1.75,fig8,40,-0.200349,0.0117899,0.0707393,False,-0.344709,-0.0667661,受影響集數(全部載入的集中 success=False 且 rmse<=1m)=35
+a_p2d_rm_rule,H1a|s=2.5|fig8|sp1.0,H1a,2.5,fig8,40,-0.665202,0.000199998,0.00319997,True,-0.96229,-0.377384,受影響集數(全部載入的集中 success=False 且 rmse<=1m)=35
+a_p2d_rm_rule,H1b|s=2.5|fig8|sp1.0,H1b,2.5,fig8,40,-0.228965,0.0314197,0.157098,False,-0.428959,-0.0432815,受影響集數(全部載入的集中 success=False 且 rmse<=1m)=35
+b_tost_0.5cm,H3|s=1|circle|sp1.0,H3,1,circle,40,-0.0208055,9.9999e-06,,True,-0.0320097,-0.00983523,未校正 p
+b_tost_0.5cm,H3|s=0|circle|sp1.0,H3,0,circle,40,-0.00459655,9.9999e-06,,True,-0.0159153,0.00765731,未校正 p
+b_tost_0.5cm,H3|s=0.5|circle|sp1.0,H3,0.5,circle,40,-0.0230186,9.9999e-06,,True,-0.0340419,-0.0132185,未校正 p
+b_tost_0.5cm,H3|s=1.75|circle|sp1.0,H3,1.75,circle,40,-0.0382318,9.9999e-06,,True,-0.048947,-0.0274675,未校正 p
+b_tost_0.5cm,H3|s=2.5|circle|sp1.0,H3,2.5,circle,40,-0.0272451,9.9999e-06,,True,-0.0445017,-0.0103141,未校正 p
+b_tost_0.5cm,H3|s=1|fig8|sp1.0,H3,1,fig8,40,-0.032954,9.9999e-06,,True,-0.0430627,-0.0227332,未校正 p
+b_tost_0.5cm,H3|s=0|fig8|sp1.0,H3,0,fig8,40,-0.0115405,9.9999e-06,,True,-0.0204965,-0.00225183,未校正 p
+b_tost_0.5cm,H3|s=0.5|fig8|sp1.0,H3,0.5,fig8,40,-0.0241107,9.9999e-06,,True,-0.0334105,-0.0148387,未校正 p
+b_tost_0.5cm,H3|s=1.75|fig8|sp1.0,H3,1.75,fig8,40,-0.0357324,9.9999e-06,,True,-0.0482222,-0.0239026,未校正 p
+b_tost_0.5cm,H3|s=2.5|fig8|sp1.0,H3,2.5,fig8,40,-0.0490859,9.9999e-06,,True,-0.0669929,-0.0324756,未校正 p
+c_drop_failed_pairs,H1a|s=0|circle|sp1.0,H1a,0,circle,40,0.118234,0.841792,0.841792,False,-0.0553765,0.309245,成對刪除
+c_drop_failed_pairs,H1b|s=0|circle|sp1.0,H1b,0,circle,40,-0.640644,9.9999e-06,0.000199998,True,-0.864552,-0.432126,成對刪除
+c_drop_failed_pairs,H1a|s=0.5|circle|sp1.0,H1a,0.5,circle,40,-0.378087,0.000849992,0.0101999,True,-0.564721,-0.193076,成對刪除
+c_drop_failed_pairs,H1b|s=0.5|circle|sp1.0,H1b,0.5,circle,40,-0.250285,6.99993e-05,0.00125999,True,-0.364979,-0.146142,成對刪除
+c_drop_failed_pairs,H1a|s=1|circle|sp1.0,H1a,1,circle,40,-0.383787,0.00469995,0.0328997,True,-0.612929,-0.156895,成對刪除
+c_drop_failed_pairs,H1b|s=1|circle|sp1.0,H1b,1,circle,40,-0.160129,0.00379996,0.0303997,True,-0.255079,-0.0692029,成對刪除
+c_drop_failed_pairs,H1a|s=1.75|circle|sp1.0,H1a,1.75,circle,40,-0.502775,0.00180998,0.0199098,True,-0.772276,-0.239477,成對刪除
+c_drop_failed_pairs,H1b|s=1.75|circle|sp1.0,H1b,1.75,circle,40,-0.158099,0.0467895,0.187158,False,-0.311982,-0.0161963,成對刪除
+c_drop_failed_pairs,H1a|s=2.5|circle|sp1.0,H1a,2.5,circle,40,-0.648966,0.000259997,0.00415996,True,-0.937629,-0.368673,成對刪除
+c_drop_failed_pairs,H1b|s=2.5|circle|sp1.0,H1b,2.5,circle,40,-0.188932,0.0683193,0.204958,False,-0.395263,-0.000206404,成對刪除
+c_drop_failed_pairs,H1a|s=0|fig8|sp1.0,H1a,0,fig8,40,-0.0476501,0.354876,0.709753,False,-0.2394,0.15525,成對刪除
+c_drop_failed_pairs,H1b|s=0|fig8|sp1.0,H1b,0,fig8,40,-0.520367,0.000129999,0.00220998,True,-0.764044,-0.29141,成對刪除
+c_drop_failed_pairs,H1a|s=0.5|fig8|sp1.0,H1a,0.5,fig8,40,-0.469659,5.99994e-05,0.00113999,True,-0.656578,-0.28231,成對刪除
+c_drop_failed_pairs,H1b|s=0.5|fig8|sp1.0,H1b,0.5,fig8,40,-0.206535,0.000529995,0.00688993,True,-0.304891,-0.109885,成對刪除
+c_drop_failed_pairs,H1a|s=1|fig8|sp1.0,H1a,1,fig8,40,-0.419028,0.00240998,0.0216898,True,-0.650675,-0.190709,成對刪除
+c_drop_failed_pairs,H1b|s=1|fig8|sp1.0,H1b,1,fig8,40,-0.204469,0.000289997,0.00434996,True,-0.298378,-0.114141,成對刪除
+c_drop_failed_pairs,H1a|s=1.75|fig8|sp1.0,H1a,1.75,fig8,40,-0.512992,0.00190998,0.0199098,True,-0.789286,-0.238334,成對刪除
+c_drop_failed_pairs,H1b|s=1.75|fig8|sp1.0,H1b,1.75,fig8,40,-0.200349,0.0117899,0.0707393,False,-0.344709,-0.0667661,成對刪除
+c_drop_failed_pairs,H1a|s=2.5|fig8|sp1.0,H1a,2.5,fig8,39,-0.605963,0.000359996,0.00503995,True,-0.889335,-0.338338,成對刪除
+c_drop_failed_pairs,H1b|s=2.5|fig8|sp1.0,H1b,2.5,fig8,40,-0.228965,0.0314197,0.157098,False,-0.428959,-0.0432815,成對刪除
