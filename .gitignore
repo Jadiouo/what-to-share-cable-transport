@@ -1,0 +1,28 @@
+.venv/
+.scratch/
+__pycache__/
+*.egg-info
+.pytest_cache/
+MUJOCO_LOG.TXT
+!results/
+results/*
+!results/prereg/
+!results/figures/
+!results/media/
+# pilot data cited by docs/PREREG.md (power analysis input, tuning records)
+!results/p2d/
+!results/p2c/
+results/p2c/*
+!results/p2c/best.json
+!results/p2c/P2c_locm.md
+# third-party PDFs are not redistributed
+docs/refs/*.pdf
+# LaTeX build files
+*.aux
+*.log
+*.fls
+*.fdb_latexmk
+*.out
+*.blg
+*.bbl
+*.synctex.gz

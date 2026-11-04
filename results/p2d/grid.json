@@ -1,0 +1,381 @@
+{
+ "note": "DOB \u53ea\u8abf fc\uff1bLOC-M/CEN-ATT \u8abf lam\u3001prior\uff08prior=\u5148\u9a57\u6a19\u6e96\u5dee\u6574\u9ad4\u500d\u7387\uff0c\u57fa\u6e96 prior_dm 0.5\u3001zeta_std 0.3\u3001PRIOR_STD\uff09\uff1bEKF-L \u8abf q_b\uff08IMU \u504f\u5dee\u96a8\u6a5f\u6f2b\u6b65\uff0c\u6a21\u578b\u5931\u914d\u6700\u5927\uff09\u8207 r_scale\uff08R \u500d\u7387\uff0csigma_f \u53ea\u542b\u767d\u96dc\u8a0a\uff09\u5169\u500b\uff0c\u5176\u9918\u56fa\u5b9a\u9810\u8a2d\u3002\u6bcf\u65b9\u6cd5 8 \u7d44\u3002CON-ATT \u7528 CEN-ATT \u7684 hp\u3002\u9078\u64c7\u6307\u6a19\uff1a2020-2024 x circle/fig8 \u7684\u5e73\u5747 RMSE\uff08>1 m \u6216\u767c\u6563\u8a18 1 m\uff09\uff0c\u5e73\u624b\u53d6\u6210\u529f\u7387\u9ad8\u8005\u3002",
+ "seeds": [
+  2020,
+  2021,
+  2022,
+  2023,
+  2024
+ ],
+ "trajs": [
+  "circle",
+  "fig8"
+ ],
+ "condition": "moderate x1.0",
+ "grid": {
+  "DOB": {
+   "fc": [
+    1.0,
+    2.0,
+    4.0,
+    8.0,
+    16.0,
+    32.0,
+    64.0,
+    1000.0
+   ]
+  },
+  "LOC-M": {
+   "lam": [
+    0.999,
+    0.9995,
+    0.9998,
+    1.0
+   ],
+   "prior": [
+    0.5,
+    1.0
+   ]
+  },
+  "CEN-ATT": {
+   "lam": [
+    0.999,
+    0.9995,
+    0.9998,
+    1.0
+   ],
+   "prior": [
+    0.5,
+    1.0
+   ]
+  },
+  "EKF-L": {
+   "q_b": [
+    0.0005,
+    0.002,
+    0.008,
+    0.03
+   ],
+   "r_scale": [
+    1.0,
+    3.0
+   ]
+  }
+ },
+ "points": {
+  "DOB": [
+   {
+    "fc": 1.0
+   },
+   {
+    "fc": 2.0
+   },
+   {
+    "fc": 4.0
+   },
+   {
+    "fc": 8.0
+   },
+   {
+    "fc": 16.0
+   },
+   {
+    "fc": 32.0
+   },
+   {
+    "fc": 64.0
+   },
+   {
+    "fc": 1000.0
+   }
+  ],
+  "LOC-M": [
+   {
+    "lam": 0.999,
+    "prior": 0.5
+   },
+   {
+    "lam": 0.999,
+    "prior": 1.0
+   },
+   {
+    "lam": 0.9995,
+    "prior": 0.5
+   },
+   {
+    "lam": 0.9995,
+    "prior": 1.0
+   },
+   {
+    "lam": 0.9998,
+    "prior": 0.5
+   },
+   {
+    "lam": 0.9998,
+    "prior": 1.0
+   },
+   {
+    "lam": 1.0,
+    "prior": 0.5
+   },
+   {
+    "lam": 1.0,
+    "prior": 1.0
+   }
+  ],
+  "CEN-ATT": [
+   {
+    "lam": 0.999,
+    "prior": 0.5
+   },
+   {
+    "lam": 0.999,
+    "prior": 1.0
+   },
+   {
+    "lam": 0.9995,
+    "prior": 0.5
+   },
+   {
+    "lam": 0.9995,
+    "prior": 1.0
+   },
+   {
+    "lam": 0.9998,
+    "prior": 0.5
+   },
+   {
+    "lam": 0.9998,
+    "prior": 1.0
+   },
+   {
+    "lam": 1.0,
+    "prior": 0.5
+   },
+   {
+    "lam": 1.0,
+    "prior": 1.0
+   }
+  ],
+  "EKF-L": [
+   {
+    "q_b": 0.0005,
+    "r_scale": 1.0
+   },
+   {
+    "q_b": 0.0005,
+    "r_scale": 3.0
+   },
+   {
+    "q_b": 0.002,
+    "r_scale": 1.0
+   },
+   {
+    "q_b": 0.002,
+    "r_scale": 3.0
+   },
+   {
+    "q_b": 0.008,
+    "r_scale": 1.0
+   },
+   {
+    "q_b": 0.008,
+    "r_scale": 3.0
+   },
+   {
+    "q_b": 0.03,
+    "r_scale": 1.0
+   },
+   {
+    "q_b": 0.03,
+    "r_scale": 3.0
+   }
+  ]
+ },
+ "ext_rule": {
+  "fc": [
+   0.5,
+   128.0
+  ],
+  "lam": [
+   0.998,
+   null
+  ],
+  "prior": [
+   0.25,
+   2.0
+  ],
+  "q_b": [
+   0.000125,
+   0.12
+  ],
+  "r_scale": [
+   0.5,
+   10.0
+  ]
+ },
+ "ext": {
+  "DOB": {
+   "stage1_best": {
+    "fc": 16.0
+   },
+   "boundary": [],
+   "points": []
+  },
+  "LOC-M": {
+   "stage1_best": {
+    "lam": 0.999,
+    "prior": 1.0
+   },
+   "boundary": [
+    "lam:lo",
+    "prior:hi"
+   ],
+   "points": [
+    {
+     "lam": 0.998,
+     "prior": 1.0
+    },
+    {
+     "lam": 0.999,
+     "prior": 2.0
+    }
+   ]
+  },
+  "CEN-ATT": {
+   "stage1_best": {
+    "lam": 0.9998,
+    "prior": 1.0
+   },
+   "boundary": [
+    "prior:hi"
+   ],
+   "points": [
+    {
+     "lam": 0.9998,
+     "prior": 2.0
+    }
+   ]
+  },
+  "EKF-L": {
+   "stage1_best": {
+    "q_b": 0.0005,
+    "r_scale": 3.0
+   },
+   "boundary": [
+    "q_b:lo",
+    "r_scale:hi"
+   ],
+   "points": [
+    {
+     "q_b": 0.000125,
+     "r_scale": 3.0
+    },
+    {
+     "q_b": 0.0005,
+     "r_scale": 10.0
+    }
+   ]
+  }
+ },
+ "ext2": {
+  "note": "\u504f\u96e2 p2d_prespec\uff1a\u4f7f\u7528\u8005\u6838\u51c6 EKF-L r_scale \u5ef6\u4f38\u5230\u4e0d\u5728\u908a\u754c\u70ba\u6b62\uff1b\u689d\u4ef6\u540c\u539f\u8abf\u53c3",
+  "points": [
+   {
+    "q_b": 0.0005,
+    "r_scale": 30.0
+   },
+   {
+    "q_b": 0.0005,
+    "r_scale": 100.0
+   },
+   {
+    "q_b": 0.002,
+    "r_scale": 10.0
+   },
+   {
+    "q_b": 0.000125,
+    "r_scale": 10.0
+   }
+  ]
+ },
+ "geo": {
+  "note": "EKF-L+GEO \u62c6\u89e3\u5c0d\u7167\u8abf\u53c3\uff08\u689d\u4ef6\u540c\u5176\u4ed6\u65b9\u6cd5\uff1amoderate x1.0\u3001seeds 2020-2024\u3001circle+fig8\uff09\uff1buse_dc \u662f\u7d50\u69cb\u9078\u9805",
+  "grid": {
+   "q_b": [
+    0.0005,
+    0.002
+   ],
+   "r_scale": [
+    3.0,
+    10.0
+   ],
+   "use_dc": [
+    0,
+    1
+   ]
+  },
+  "rounds": [
+   {
+    "stage": "stage1",
+    "points": [
+     {
+      "q_b": 0.0005,
+      "r_scale": 3.0,
+      "use_dc": 0
+     },
+     {
+      "q_b": 0.0005,
+      "r_scale": 3.0,
+      "use_dc": 1
+     },
+     {
+      "q_b": 0.0005,
+      "r_scale": 10.0,
+      "use_dc": 0
+     },
+     {
+      "q_b": 0.0005,
+      "r_scale": 10.0,
+      "use_dc": 1
+     },
+     {
+      "q_b": 0.002,
+      "r_scale": 3.0,
+      "use_dc": 0
+     },
+     {
+      "q_b": 0.002,
+      "r_scale": 3.0,
+      "use_dc": 1
+     },
+     {
+      "q_b": 0.002,
+      "r_scale": 10.0,
+      "use_dc": 0
+     },
+     {
+      "q_b": 0.002,
+      "r_scale": 10.0,
+      "use_dc": 1
+     }
+    ]
+   },
+   {
+    "stage": "ext1",
+    "points": [
+     {
+      "q_b": 0.000125,
+      "r_scale": 10.0,
+      "use_dc": 0
+     },
+     {
+      "q_b": 0.0005,
+      "r_scale": 30.0,
+      "use_dc": 0
+     }
+    ]
+   }
+  ]
+ }
+}

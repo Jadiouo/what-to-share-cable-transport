@@ -1,0 +1,58 @@
+{
+ "DOB": {
+  "hp": {
+   "fc": 16.0
+  },
+  "tune_rmse_cm": 4.092384257846262,
+  "tune_succ": 1.0,
+  "still_boundary": []
+ },
+ "LOC-M": {
+  "hp": {
+   "lam": 0.998,
+   "prior": 1.0
+  },
+  "tune_rmse_cm": 3.9348990036302642,
+  "tune_succ": 1.0,
+  "still_boundary": [
+   "lam:lo"
+  ]
+ },
+ "CEN-ATT": {
+  "hp": {
+   "lam": 0.9998,
+   "prior": 2.0
+  },
+  "tune_rmse_cm": 2.846894183328856,
+  "tune_succ": 1.0,
+  "still_boundary": [
+   "prior:hi"
+  ]
+ },
+ "EKF-L": {
+  "hp": {
+   "q_b": 0.0005,
+   "r_scale": 10.0
+  },
+  "tune_rmse_cm": 3.3337636463079967,
+  "tune_succ": 1.0,
+  "still_boundary": []
+ },
+ "CON-ATT": {
+  "hp": {
+   "lam": 0.9998,
+   "prior": 2.0
+  },
+  "note": "\u8207 CEN-ATT \u5171\u7528 hp"
+ },
+ "EKF-L+GEO": {
+  "hp": {
+   "q_b": 0.0005,
+   "r_scale": 10.0,
+   "use_dc": 0
+  },
+  "tune_rmse_cm": 3.2547612300902653,
+  "tune_succ": 1.0,
+  "still_boundary": []
+ }
+}

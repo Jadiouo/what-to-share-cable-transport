@@ -1,0 +1,279 @@
+\documentclass[conference]{IEEEtran}
+\usepackage{cite}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{url}
+\usepackage{microtype}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc}
+\graphicspath{{figs/}}
+
+\begin{document}
+
+\title{What to Share in Cooperative\\ Cable-Suspended Transport:\\
+A Preregistered Simulation Study\\ Across Sensing Quality}
+
+\author{\IEEEauthorblockN{Hao-Ting Ho}
+\IEEEauthorblockA{Department of Electrical Engineering, Tunghai University, Taichung, Taiwan\\
+haoting.ho@outlook.com}}
+
+\maketitle
+
+\begin{abstract}
+Quadrotors carrying one cable-suspended payload can share geometry (positions and rope directions) or run a consensus estimator that exchanges measurements and filter information to estimate the common payload parameters jointly. Which is worth sharing as sensing degrades? We add them in turn to a tuned local extended Kalman filter (EKF) in a preregistered simulation with three quadrotors and five sensing levels (protocol frozen in an author-held git commit). Both gains are small: a few millimetres, where the consensus estimator's tracking error is 2.3--3.7\,cm. Teammate geometry gives a detectable gain at all four degraded levels, about 11--14\% of the local EKF's error; with clean sensing the evidence is insufficient. Replacing the geometry-augmented EKF by the consensus estimator gives a further gain that is detectable from clean to moderately degraded sensing, with insufficient evidence beyond. This further gain bundles three changes we did not separate, so it is not the value of estimate exchange alone. Under ideal links, two consensus iterations stay within a 0.25\,cm equivalence margin of a centralized estimator, a margin of the same order as the gains. We claim no trend in these two gains across sensing levels; all results come from one simulator, team size and payload geometry.
+\end{abstract}
+
+\begin{IEEEkeywords}
+multi-robot transport, cable-suspended payload, distributed estimation, consensus, preregistration
+\end{IEEEkeywords}
+
+\section{Introduction}
+Quadrotors that carry one payload on cables each feel only the pull of their own rope, yet the payload's mass and center-of-mass offset are common to the whole team. Teammates can therefore share two kinds of information. Sharing \emph{geometry} means broadcasting positions and rope directions, from which each quadrotor can tell how the payload tilts and how its weight is split among the ropes. Sharing \emph{estimates} means exchanging measurements and estimator information, so that the team estimates the common payload parameters together. Sharing geometry is cheap: each quadrotor broadcasts its position and rope direction. A consensus estimator asks for more: every quadrotor runs a filter over the whole team's parameters and exchanges measurements and filter information with its neighbors at every control step. A strong local estimator may already capture most of what either offers.
+
+The work we reviewed does not compare the two. Decentralized payload control has estimated load share locally without estimate exchange~\cite{gpac2026} or targeted computation and communication load~\cite{tasooji2025} (Sec.~\ref{sec:related}). We did not find a study comparing geometry sharing against estimate sharing for cable-suspended transport across sensing degradation levels; the search was limited, so this is no priority claim.
+
+We therefore ask which kind of sharing is worth it as onboard sensing degrades, in simulation and against a tuned local EKF. The comparison is \emph{preregistered}: hypotheses, sensing levels, metric, tests and decision rules were frozen before the formal run (Sec.~\ref{sec:protocol} states what the freeze does not guarantee). Both gains are small: adding teammate geometry, and then replacing the filter by the consensus estimator, each changes tracking error by millimetres where detectable (about 0.2--0.65\,cm), against the consensus estimator's tracking error of 2.3--3.7\,cm. Teammate geometry gives a detectable gain at all four degraded levels, and with clean sensing the evidence is insufficient. Replacing the geometry-augmented EKF by the consensus estimator gives a further gain that is detectable from clean to moderately degraded sensing, with insufficient evidence beyond. Which gain is detectable thus differs between clean and degraded sensing, and we claim no trend across sensing levels. With effects this small, the contribution is the protocol and the comparison of \emph{what} is shared, not a large improvement.
+
+\noindent Our contributions are:
+\begin{itemize}
+\item A comparison that adds teammate geometry, and then the consensus estimator, on top of a local EKF, so that each increment is measured in one fixed order (Table~\ref{tab:info}).
+\item A preregistered sweep over five levels of sensing degradation with paired sign-flip tests, Holm correction and two one-sided equivalence tests (TOST).
+\item A statement of what the measured gains do and do not support, including a failure-scoring artifact that inflates some numbers.
+\end{itemize}
+
+\section{Related Work}\label{sec:related}
+GPAC~\cite{gpac2026} lists distributed fusion across cables as future work; event-triggered distributed nonlinear model predictive control (NMPC)~\cite{tasooji2025} targets computation and communication load. Center-of-gravity estimation has been studied for rigidly coupled drones~\cite{barawkar2024}, and cooperative payload-parameter estimation by multiple quadrotors in~\cite{arab2021} (full text not read). Consensus on parameter estimates is a general tool~\cite{mendez2026}; we use the hybrid consensus-on-measurements-and-information (HCMCI) scheme~\cite{battistelli_hcmci}. Background: cable-suspended load control~\cite{sreenath2013,lee2018,lee2013multi,sreenath_kumar2013,michael2011}, model predictive path integral (MPPI) control~\cite{williams2017}, MuJoCo~\cite{todorov2012}, Holm~\cite{holm1979} and TOST~\cite{schuirmann1987} tests. The search behind our gap statement (Sec.~I) was web search without citation tracking.
+
+\section{What Is Compared}\label{sec:compared}
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.6\columnwidth]{sim_snapshot_t4.png}
+\caption{Three quadrotors (orange) hold one payload (blue disc) on separate ropes and move it along a reference path (red dots). Frame at $t{=}4$\,s of a consensus-estimator run on the circle at $s{=}1$.}
+\label{fig:scene}
+\end{figure}
+We simulate three quadrotors that carry one payload on ropes in MuJoCo (Fig.~\ref{fig:scene}; all parameters are in Appendix~\ref{app:sim}). The payload has an unknown mass offset $\delta m$ and an unknown center-of-mass offset $\delta c$, both common to the team, and each quadrotor has its own unknown thrust-coefficient error $\zeta_i$. Every quadrotor runs the same distributed MPPI controller, with hyper-parameters frozen before this study, so the methods differ only in the estimator (the residual-filter baseline also lacks the model feed-forward and thrust compensation described in Appendix~\ref{app:sim}). None of the compared estimators reads payload ground truth, and teammate information reaches the controller only through the estimator. The payload follows a circle or a figure-eight for 10\,s, without wind.
+
+We scale onboard sensing with a single sensing degradation level $s$: $s{=}0$ is clean, $s{=}1$ is moderate, and larger values are worse. Raising $s$ increases inertial measurement unit (IMU) noise and bias, the thrust-coefficient error and rope-direction noise, and it lengthens the measurement delay in steps; position noise rises up to $s{=}1$ and stays constant above. The profiles are assumed, not measured. We evaluate $s\in\{0,0.5,1,1.75,2.5\}$. Because several degradations rise at once, the delay changes in steps and position noise saturates, $s$ orders the conditions and is not a single physical scale (formulas in Appendix~\ref{app:sim}).
+
+Figure~\ref{fig:ladder} sketches the ladder of methods, and Table~\ref{tab:info} orders the methods by what they read.
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[>=Stealth, box/.style={draw, rounded corners=1pt, align=center, inner sep=2pt, font=\footnotesize, text width=0.52\columnwidth}, lab/.style={anchor=west, align=left, font=\footnotesize, text width=0.33\columnwidth, inner sep=1pt}]
+\node[box] (a) {local EKF\\ (own sensors)};
+\node[box, below=0.8cm of a] (b) {geometry-augmented EKF\\ (+ teammates' positions and rope directions)};
+\node[box, below=0.8cm of b] (c) {consensus estimator\\ (+ exchanged measurements and estimates, $\delta c$ estimation, information-form filter)};
+\node[box, below=0.8cm of c] (d) {centralized estimator\\ (same data under ideal links, one filter)};
+\node[box, dashed, text width=0.32\columnwidth, anchor=north west] (e) at ($(c.north east)+(0.35cm,-0.1cm)$) {residual-filter baseline\\ (no model feed-forward or thrust compensation)};
+\draw[->, thick] (a) -- (b);
+\draw[->, thick] (b) -- (c);
+\draw[dashed, thick] (c) -- (d);
+\draw[dashed] (e.west) -- (e.west -| c.east) node[midway, above, font=\scriptsize, inner sep=1.5pt] {H2};
+\node[lab] at ($(a.south east)!0.5!(b.north east)+(0.1cm,0)$) {geometry gain $D_a$ (H1a)};
+\node[lab] at ($(b.south east)!0.5!(c.north east)+(0.1cm,0)$) {estimator gain $D_b$ (H1b): three changes together};
+\node[lab, anchor=east, align=right] at ($(c.south)!0.5!(d.north)+(-0.1cm,0)$) {H3: within $\pm0.25$\,cm?};
+\end{tikzpicture}
+\caption{Each arrow changes what the estimator reads or how it estimates, and the two arrows are the gains $D_a$ and $D_b$ that we measure; dashed lines mark the comparisons behind H2 and H3 (hypotheses H1a--H3 are defined in Sec.~\ref{sec:protocol}). The centralized estimator is a reference with the same data, not an upper bound. Table~\ref{tab:info} lists what each method reads.}
+\label{fig:ladder}
+\end{figure}
+\begin{table}[t]
+\centering
+\caption{Going down the table, the estimator reads more: teammate geometry for EKF-L+GEO, then teammates' estimates and measurements for CON-ATT, and, for CEN-ATT, one filter that reads all data (LOC-M and EKF-L read the same inputs). Relay: all teammates' packets are forwarded to every agent. Ideal links unless stated.}
+\label{tab:info}
+\footnotesize
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{lcccccc}
+\toprule
+Method & IMU & own & rope & team. & team. & team. \\
+ & & pose & dir. & geom. & est. & meas. \\
+\midrule
+DOB & own & -- & -- & -- & -- & -- \\
+LOC-M & own & \checkmark & \checkmark & -- & -- & -- \\
+EKF-L & own & \checkmark & \checkmark & -- & -- & -- \\
+EKF-L+GEO & own & \checkmark & \checkmark & relay & -- & -- \\
+CON-ATT & own & \checkmark & \checkmark & relay & consensus & relay \\
+CEN-ATT & team & \checkmark & \checkmark & central & central & central \\
+\bottomrule
+\end{tabular}
+\end{table}
+The residual-filter baseline (DOB) low-pass filters the force residual and uses no model feed-forward. The local mass estimator (LOC-M) recursively estimates the payload mass offset and the quadrotor's own thrust error. The local EKF (EKF-L) does the same with an extended Kalman filter that also tracks the IMU bias and treats $\delta c$ as zero. The geometry-augmented EKF (EKF-L+GEO) adds teammates' positions and rope directions to the EKF's measurements. With them an agent recovers the payload attitude and replaces the nominal split of rope tension by an attitude-aware one. This geometry is shared by the architecture, not agreed on by consensus. The consensus estimator (CON-ATT, where ``ATT'' stands for the attitude-aware payload model that CEN-ATT also uses) keeps, on each quadrotor, an information-form estimate of the whole team's parameters ($\delta m$, $\delta c$ and every thrust error) and averages it with its neighbors on a chain 1--2--3 using HCMCI, with two consensus iterations per step. The centralized estimator (CEN-ATT) is its centralized counterpart: one filter of the same form that reads all data in one place. Because packets are relayed to every agent, under ideal links each CON-ATT agent holds the same data as CEN-ATT. The two are designed to differ only in the truncated consensus iterations; we did not isolate that difference.
+
+We measure two increments, in one fixed order of adding information. The geometry gain $D_a(s)$ is the tracking error of EKF-L+GEO minus that of EKF-L. The estimator gain $D_b(s)$ is what changes when the geometry-augmented EKF is replaced by the consensus estimator as a whole: the tracking error of CON-ATT minus that of EKF-L+GEO. Negative values favour the more informed method, and the two increments are not an additive decomposition. $D_b$ bundles three changes: exchange of measurements and estimates, estimation of $\delta c$ (which EKF-L+GEO does not do), and an information-form filter in place of an EKF. The tuning budgets also differed (Sec.~\ref{sec:protocol}). We did not run ablations to separate these changes, so we read $D_b$ as the overall gain of CON-ATT over EKF-L+GEO, never as the effect of sharing estimates alone.
+
+\section{Preregistered Protocol}\label{sec:protocol}
+Before the formal run we fixed the hypotheses, the five sensing levels, the metric, the tests and the decision rules. The primary metric is tracking error: the payload-position root-mean-square error (RMSE) over an episode, in cm, for 40 seeds on each trajectory and compared in pairs by seed. An episode that fails the success check is scored 100\,cm instead of being dropped; in this study every failure was a last-second mean error above 10\,cm (full rule in Appendix~\ref{app:fail}). The five hypotheses use differences A$-$B, so negative favours A.
+\begin{itemize}
+\item H1a: the geometry gain $D_a$ is negative.
+\item H1b: the estimator gain $D_b$ is negative.
+\item H2: the gap between DOB and CON-ATT grows with $s$ (positive slope in $s$ of RMSE(DOB) $-$ RMSE(CON-ATT)).
+\item H3: CON-ATT and CEN-ATT are equivalent within $\pm0.25$\,cm at $s{=}1$ (TOST).
+\item H4 (secondary): the slope in $s$ of $D_a-D_b$ is negative; we use its direction only, and not for the main claim.
+\end{itemize}
+A hypothesis counts as \emph{supported} at a level of $s$ only if both trajectories reject the null after Holm correction (95\% bootstrap confidence intervals, CIs, are also reported). Otherwise we write ``insufficient evidence'', which is not ``no effect'', because only H3 has an equivalence test. We also report a descriptive practical threshold $\Delta=0.5$\,cm, which is not a test (Appendix~\ref{app:prereg}).
+
+The freeze is a git commit in the author's private repository that holds the hypotheses, the tests and the analysis script. The formal run used fresh seeds, treated pilot data as no evidence, and did not deviate from the frozen protocol. The freeze is weaker than a third-party registration. It has no third-party timestamp, and the author had seen pilot data before freezing. The directions of H1a, H1b and H4 came from that pilot data, and the formal run tests them on new seeds. The rule for scoring failed episodes was set after the pilot, and it inflates the size of H2 and one entry of Table~\ref{tab:h1}. All hyper-parameters were tuned once, at $s{=}1$, with unequal budgets: EKF-L received 14 grid points, EKF-L+GEO 10 and CON-ATT 9. That favours EKF-L, so it is conservative for the geometry claim, but EKF-L+GEO and CON-ATT received nearly equal budgets, so it is not conservative for the estimator-gain claim (Appendix~\ref{app:prereg}).
+
+\section{Results}
+\subsection{Teammate geometry has a detectable gain once sensing is degraded; the estimator gain is detectable up to moderate degradation}
+Teammate geometry gives a small detectable gain once sensing is degraded. For $s\ge0.5$ the geometry gain $D_a$ is supported on both trajectories, from $-0.38$ to $-0.65$\,cm (excluding the $\dagger$ entry), about 11--14\% of EKF-L's tracking error; its mean reaches $\Delta$ only for $s\ge1.75$ (Table~\ref{tab:h1}, Fig.~\ref{fig:h1}). At $s=0$ the evidence is insufficient: neither trajectory passes the corrected test, and the CIs include zero. Table~\ref{tab:h1} also lists medians, since a mean can pass a threshold that the median does not. One entry ($\dagger$) comes from a single failed episode scored 100\,cm; the other 19 entries do not depend on that scoring (Appendix~\ref{app:fail}).
+
+\begin{table}[t]
+\centering
+\caption{The geometry gain $D_a$ is detectable from $s{=}0.5$ on and the estimator gain $D_b$ up to $s{=}1$, in entries that are not italic. Entries are paired tracking-error differences in cm, mean (median; medians are post hoc), 40 seeds, A$-$B, so negative favours the more informed method. $D_a$: EKF-L+GEO $-$ EKF-L; $D_b$: CON-ATT $-$ EKF-L+GEO. Italic: not rejected after Holm correction in the main family of tests. $\dagger$: one failed episode, see text; it is $-0.67$ with raw-error scoring (Appendix~\ref{app:fail}).}
+\label{tab:h1}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lcccc}
+\toprule
+ & \multicolumn{2}{c}{$D_a$ (H1a)} & \multicolumn{2}{c}{$D_b$ (H1b)} \\
+$s$ & circle & figure-eight & circle & figure-eight \\
+\midrule
+0 & \textit{+0.12 (--0.06)} & \textit{--0.05 (--0.16)} & --0.64 (--0.27) & --0.52 (--0.14) \\
+0.5 & --0.38 (--0.38) & --0.47 (--0.35) & --0.25 (--0.12) & --0.21 (--0.13) \\
+1 & --0.38 (--0.21) & --0.42 (--0.20) & --0.16 (--0.10) & --0.20 (--0.17) \\
+1.75 & --0.50 (--0.33) & --0.51 (--0.25) & \textit{--0.16 (--0.03)} & \textit{--0.20 (--0.12)} \\
+2.5 & --0.65 (--0.38) & --2.97$^\dagger$ (--0.45) & \textit{--0.19 (--0.09)} & \textit{--0.23 (--0.10)} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{fig_H1_v3.pdf}
+\caption{The geometry gain $D_a$ is detectable from $s{=}0.5$ on and the estimator gain $D_b$ up to $s{=}1$ (Table~\ref{tab:h1}). Mean paired difference in tracking error with its 95\% bootstrap CI versus $s$; dotted line: $-\Delta=-0.5$\,cm. Formal values. At $s{=}2.5$ on the figure-eight, both the mean ($-2.97$, labelled off scale) and the lower end of its interval are clipped at $-1.4$; that point is dominated by one failed EKF-L episode (see text).}
+\label{fig:h1}
+\end{figure}
+
+Replacing the geometry-augmented EKF by the consensus estimator gives a gain that is detectable up to moderate degradation. For $s\le1$ the estimator gain $D_b$ is supported on both trajectories, from $-0.16$ to $-0.64$\,cm; only at $s=0$ does the mean reach $\Delta$ (medians $-0.27$ and $-0.14$\,cm). The point estimate is largest at $s=0$ (a post hoc observation). The difference between $s=0$ and $s=0.5$ was not tested, and it coincides with the delay jump from 0 to 2 steps. For $s\ge1.75$ no entry passes Holm correction and the power estimated before the run was low there (about 0.1). The evidence is insufficient there, and this is not evidence of no effect.
+
+Read together, the two results describe regimes; we claim no trend across sensing levels. Whether a gain is detectable at one level and not at another was not itself tested. With clean sensing only the estimator gain is detectable. Once sensing is degraded the geometry gain is detectable with the same sign throughout, and the estimator gain is detectable up to $s=1$ and not established beyond. We do not claim that the benefit shifts from estimates to geometry as sensing degrades. The secondary test H4 passes its preregistered rule, with a negative slope on both trajectories, but the size of the circle slope depends on the $s{=}0$ end point and that of the figure-eight slope on the failed episode, so we do not rely on it (Appendix~\ref{app:fail}).
+
+\subsection{Under ideal links, two consensus iterations stay within 0.25\,cm of the centralized estimator; dropping half of the messages does not make tracking error worse}
+Under ideal links and with three quadrotors, two consensus iterations stay within the preregistered band of the centralized estimator. At $s=1$ the difference CON-ATT $-$ CEN-ATT is $-0.021$\,cm on the circle and $-0.033$\,cm on the figure-eight, and both equivalence tests pass at $\pm0.25$\,cm, as they do at the four other levels. The band is of the same order as the estimator gain ($0.16$--$0.64$\,cm), so the test alone says little; the observed differences are far smaller than the band. CON-ATT is slightly \emph{better} at all five levels, so we do not treat CEN-ATT as an upper bound, and the result does not imply that distribution is lossless (Appendix~\ref{app:other}).
+
+Dropping messages did not make CON-ATT's tracking error worse at the two rates we tried, but tracking error alone says little about robustness. When half of the messages are dropped ($s{=}1$), CON-ATT is still better than EKF-L ($-0.58$ and $-0.64$\,cm), and its tracking error is not worse than without loss (Appendix~\ref{app:loss}). The comparison is not like for like, because dropout is implemented for CON-ATT only. Half-rate loss also barely thins the data that reach each agent (Appendix~\ref{app:loss}), so we claim neither robustness nor a benefit from loss. When 90\% of messages are dropped, tracking error again stays close to the lossless run, while the mean parameter and tension-prediction errors are larger (descriptive, 20 seeds, not tested; Appendix~\ref{app:loss}). CON-ATT still leads EKF-L+GEO at that drop rate, so the estimator gain need not come from communication. This is an inference only, because some packets still arrive.
+
+\subsection{The gap to a simple residual-filter baseline grows as sensing degrades}
+The gap between the residual-filter baseline (DOB) and CON-ATT grows with sensing degradation, and the baseline increasingly misses the success criterion. On raw tracking error the gap rises from 0.4 and 0.2\,cm (circle, figure-eight) at $s=0$ to 4.95 and 4.92\,cm at $s=2.5$ (Fig.~\ref{fig:h2} in Appendix~\ref{app:fail}), and at $s=2.5$ DOB misses the success criterion in 22 of 80 episodes where CON-ATT misses it in none. The preregistered slope is positive on both trajectories, but the 100\,cm failure score inflates its size, so we quote raw values (post hoc; Appendix~\ref{app:fail}). The comparison also mixes shared estimation with model feed-forward and thrust compensation, which DOB lacks. DOB's cutoff frequency was tuned only at $s{=}1$, and $s$ is not a linear scale, so a slope is a coarse summary.
+
+\section{Limitations}
+All results come from simulation with three quadrotors, one payload geometry, no wind and independent noise on each quadrotor, and no quadrotor has a load cell, so the load-cell-based GPAC~\cite{gpac2026} is not compared. The team size is a firm limit: the attitude-aware model used by the consensus and centralized estimators broke down in single preliminary runs with four and six quadrotors (the flights completed), so the results do not extend beyond three. The sensing profiles are assumed, and $s$ raises IMU noise and bias, thrust error, rope-direction noise and delay together (position noise up to $s{=}1$), so we cannot say which degradation drives any dependence on $s$. The two trajectories share seeds and are not independent replications. Every estimator except DOB is given the true IMU noise level of the current $s$, and the consensus and centralized estimators are also given the true rope-direction noise level; DOB has no such input.
+
+The estimator gain bundles three changes that we did not ablate. Hyper-parameters were tuned only at $s{=}1$, with unequal budgets. Holm correction is applied within families only, and five main-family adjusted $p$-values lie between 0.02 and 0.033. The preregistered tests are one-sided; with two-sided tests neither gain would count as supported at $s{=}1$ (post hoc; Appendix~\ref{app:prereg}). Some results are post hoc and were not preregistered: the medians in Table~\ref{tab:h1}, the raw-error H2 slope and its figure, the H4 slopes without $s{=}0$ or with raw error, the observation that the estimator gain peaks at $s{=}0$, a true-parameter reference (ORACLE), the message-layer completeness, the message sizes, the clipped-estimate share and the two-sided $p$-values. Appendices~\ref{app:prereg}--\ref{app:other} list the remaining disclosures.
+
+\section{Conclusion}
+This study supports the following. On top of a tuned local EKF, adding teammate geometry and then switching to the consensus estimator each changed tracking error by about 0.2--0.65\,cm where detectable, against the consensus estimator's tracking error of 2.3--3.7\,cm; which of the two gains is detectable differs between clean and degraded sensing. Under ideal links and with three quadrotors, two consensus iterations stayed within a band of the centralized estimator that is of the same order as the gains. It does not establish a trend in the two gains across sensing levels, a separate value for exchanging estimates, robustness to packet loss, or any claim beyond three quadrotors, one payload geometry and one simulator. The frozen protocol matters as much as the numbers (code and data: \url{https://github.com/Jadiouo/what-to-share-cable-transport}).
+
+\bibliographystyle{IEEEtran}
+\bibliography{refs}
+
+\appendices
+
+\section{Simulation, Estimator and Sensing Details}\label{app:sim}
+Table~\ref{tab:sim} lists the simulation, controller and sensing parameters. Each quadrotor feeds its own parameter estimate into its MPPI payload model and divides its commanded thrust by $1{+}\hat\zeta_i$ (DOB does neither). Teammate information enters only through the estimator: geometry in its measurement model, consensus information in its state.
+
+\begin{table}[t]
+\centering
+\caption{Only the thrust-error, sensing and delay entries vary with $s$; all other entries are fixed. Noise levels interpolate linearly from the clean profile ($s{=}0$) to the moderate profile ($s{=}1$) and extrapolate beyond; delay and position noise follow the rules in the table.}
+\label{tab:sim}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}l p{0.68\columnwidth}@{}}
+\toprule
+Quantity & Value \\
+\midrule
+Team & 3 quadrotors, 1\,kg each; ropes 1\,m \\
+Payload & nominal 1\,kg, radius 0.15\,m; mass offset $\delta m\in[-0.3,0.4]$\,kg; center-of-mass offset $\delta c$ of radius $\le0.04$\,m \\
+Thrust error & $k_i\sim U(1\pm0.05\,s)$ per quadrotor, $\zeta_i=k_i-1$ \\
+Simulator & MuJoCo, control step 0.01\,s, no wind \\
+MPPI & $K{=}512$ samples, horizon 20 steps of 0.05\,s, hyper-parameters frozen \\
+Circle & radius 0.8\,m, 1.2\,rad/s \\
+Figure-eight & 0.8\,m $\times$ 0.4\,m, 0.9\,rad/s \\
+Episode & 10\,s \\
+Levels $s$ & $\{0,0.5,1,1.75,2.5\}$ \\
+IMU noise & $\sigma=0.15+0.45\,s$\,m/s$^2$; bias std $0.1\,s$\,m/s$^2$ \\
+Position noise & $0.01\min(s,1)$\,m \\
+Delay & 0 steps for $s<0.5$, 2 for $s<1.75$, 3 otherwise (step 0.01\,s) \\
+Rope direction & noise $\sigma_q=0.005+0.005\,s$\,rad (clean 0.005, moderate 0.01) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+EKF-L has the state $[\delta m,\zeta_i,b_i]$, where $b_i\in\mathbb{R}^3$ is the IMU bias (random-walk model), and $\delta c$ is fixed at 0. EKF-L+GEO recovers the payload attitude from teammates' positions and rope directions with a Kabsch fit, and $\delta c$ is not estimated in its frozen configuration. It uses no torque pseudo-measurement, because that would need teammates' measurements. CON-ATT keeps an information pair $(\Lambda_i,\xi_i)$ over the full team state $[\delta m,\delta c,\zeta_{1..N}]$ ($N{=}3$ quadrotors) and runs HCMCI with Metropolis weights, 2 consensus iterations per step, on the path graph 1--2--3. Its local filter is a recursive least-squares update with a forgetting factor; unlike the two EKFs it has no IMU-bias state, and it adds a torque pseudo-measurement built from teammates' measurements. Packets of teammates' $(p_q,q,y,f,\text{active})$ are relayed $N{-}1$ rounds, which gives every agent the same data as CEN-ATT under ideal links. For a dropped message (CON-ATT only; this applies to the relay rounds as well as the consensus iterations) the weight returns to the receiver, and stale packets older than 5 steps trigger a fallback to nominal geometry. EKF-L+GEO does not implement dropout.
+
+Message sizes (counted from the code; message contents, not measured traffic or bandwidth). Per control step, EKF-L+GEO relays 2 rounds of 6-number packets per source (position and rope direction). CON-ATT relays 2 rounds of 13-number packets per source ($p_q,q,y,f$, active), then runs 2 consensus iterations; each exchanges two information pairs $(\Lambda,\xi)$ of 27 numbers (21 upper-triangle entries of the symmetric $6{\times}6$ $\Lambda$ plus 6 of $\xi$), 54 per message (84 with full matrices). A relay round can carry a neighbor's whole table of 3 packets (18 and 39 numbers).
+
+\section{Preregistration Details}\label{app:prereg}
+The freeze is the git commit \texttt{5dd3cf7} (protocol version v3, with the analysis script) in the author's private repository; the preregistration document in the public repository is identical to it, and there is no third-party timestamp. The formal run used seeds 3000--3039. Pilot data were declared not to count as evidence, and no deviation as the preregistration defines one occurred; a reporting omission is noted below. The author had seen pilot data (seeds 2200--2219, also 2020--2029 and 2100--2119) before freezing. The directions of H1a, H1b and H4 came from this pilot data, and the formal run tests them on new seeds. The rule that a failed episode is scored 100\,cm was set after the pilot: the pilot code scored only non-finite or $>1$\,m episodes as 1\,m. This rule is the source of the H2 magnitudes and of the single-episode artifact in Table~\ref{tab:h1}; the sensitivity analysis with raw-error scoring is reported in Appendix~\ref{app:fail}.
+
+The primary metric is $\mathrm{RMSE}_\text{eff}$, the payload-position RMS error (cm) over the episode, with a failed episode scored 100\,cm. Differences are A$-$B and are analysed per trajectory, paired by seed, with 40 seeds. The tests are one-sided paired sign-flip permutation tests ($10^5$ flips) with Holm correction within preregistered families (F1: H1a and H1b $\times$ 5 levels $\times$ 2 trajectories, 20 tests; F2: H2; F3: H3; further secondary families) at $\alpha=0.05$, and 95\% percentile-bootstrap CIs over seeds (10\,000 resamples). H2 uses the ordinary least squares (OLS) slope in $s$. H3 uses TOST at $\pm0.25$\,cm, with $\pm0.5$\,cm as a sensitivity band. A $(\text{hypothesis},s)$ entry is \emph{supported} only if both trajectories are rejected after Holm correction. The threshold $\Delta=0.5$\,cm is descriptive: an entry ``reaches $\Delta$'' if both mean differences are $\le-0.5$\,cm. By this rule $D_a$ reaches $\Delta$ at $s=1.75$ (barely: $-0.503$, $-0.513$) and at $s=2.5$, and $D_b$ at $s=0$; the medians of $D_a$ are above $-0.5$\,cm everywhere ($-0.20$ to $-0.45$ for $s\ge0.5$), so ``reaches $\Delta$'' concerns the mean only.
+
+The preregistration said that two-sided $p$-values would be listed alongside the one-sided ones. The formal report omitted them, so we give them here (post hoc). With two-sided sign-flip tests and the same Holm procedure, 2 of the 20 main-family tests are no longer rejected: $D_a$ at $s{=}1$ on the circle (adjusted $p=0.060$) and $D_b$ at $s{=}1$ on the circle (adjusted $p=0.060$). Under two-sided tests neither gain would count as supported at $s{=}1$; the geometry gain would remain supported at $s=0.5$, $1.75$ and $2.5$, and the estimator gain at $s=0$ and $0.5$. The preregistered decision rule is one-sided, and the main text follows it.
+
+All hyper-parameters were tuned once, at $s{=}1$ and trajectory speed 1.0, on separate seeds (2020--2024) and then frozen. EKF-L+GEO was tuned after the other methods. The budget was asymmetric: 14 grid points for EKF-L, 10 for EKF-L+GEO, 10 for LOC-M, 9 for CEN-ATT (shared by CON-ATT) and 8 for DOB, each point evaluated on only 10 episodes (5 seeds $\times$ 2 trajectories). EKF-L's extra points were a recorded extension, a deviation from the tuning specification that is disclosed in the preregistration. The extra budget favours EKF-L, so the direction is conservative for the geometry claim (H1a), but the budgets of EKF-L+GEO (10) and CON-ATT (9) are close, so this does not hold for the estimator-gain claim (H1b).
+
+Several results were computed after the preregistration and are post hoc: the medians in parentheses in Table~\ref{tab:h1}, the observation that the estimator gain has its largest point estimate at $s{=}0$, the H2 slope on raw error and Fig.~\ref{fig:h2}, the H4 slopes without $s{=}0$ or on raw error (with the $p$-value of the latter), the ORACLE reference (Appendix~\ref{app:other}), the message-layer completeness (Appendix~\ref{app:loss}), the message sizes counted from the code (Appendix~\ref{app:sim}), the clipped-estimate share at $p=0.9$ (Appendix~\ref{app:loss}), and the two-sided $p$-values.
+
+\section{Failed Episodes and Their Effect}\label{app:fail}
+An episode is a success if its last-second mean error is below 0.10\,m and its maximum error is below 0.5\,m. An episode with non-finite values, a failed success check or an RMSE above 1\,m is scored 100\,cm, and failed episodes are never dropped. Of all 3240 formal episodes, 35 failed (DOB 30, LOC-M 4, EKF-L 1) and are retained as preregistered. None of the 35 diverged or produced non-finite values. All failed because the last-second mean error exceeded the 10\,cm threshold (10.1 to 20.3\,cm), and no maximum error exceeded 23\,cm.
+
+The one failed EKF-L episode behind the $\dagger$ entry is seed 3024 at $s{=}2.5$ on the figure-eight: it has an RMSE of 7.9\,cm but fails the success check and is scored 100\,cm. This produces the formal $D_a=-2.97$\,cm (figure-eight), the total CON-ATT $-$ EKF-L gain of $-3.20$\,cm, and the H4 figure-eight slope of $-1.07$. Under the preregistered sensitivity analysis (which covers the main family only) that scores failed episodes by their raw RMSE (when $\le1$\,m), the figure-eight $D_a$ at $s{=}2.5$ is $-0.67$\,cm (90\% CI $-0.96$ to $-0.38$). The other 19 entries of Table~\ref{tab:h1} are unchanged under this analysis.
+
+The H4 slope depends on the $s{=}0$ end point and on that episode. The circle slope of $D_a-D_b$ is $-0.40$\,cm per unit $s$ (adjusted $p=0.0004$) and is set mainly by the $s{=}0$ end point: without $s{=}0$ it is $-0.16$ (post hoc). The size of the figure-eight formal slope ($-1.07$, adjusted $p=0.0029$) comes from the failed episode. With raw-RMSE scoring (post hoc) it is still negative, $-0.28$ (one-sided $p=0.0039$, the preregistered test; same after Holm within its two-test family), and $-0.096$ if $s{=}0$ is also dropped. What is fragile is thus the $s{=}0$ end point (circle without $s{=}0$: $-0.16$), not only the failed episode. We do not rely on H4.
+
+The preregistered H2 slope of RMSE(DOB) $-$ RMSE(CON-ATT) is positive on both trajectories (formal $+11.0$ and $+10.6$\,cm per unit $s$, adjusted $p<10^{-4}$), and positive for all 40 seeds. These magnitudes are an artifact of the 100\,cm failure scoring: DOB fails in 22 of 80 episodes at $s{=}2.5$ (success 58/80; per trajectory 0.70 [0.55,0.82] and 0.75 [0.60,0.86], Wilson 95\%), versus 80/80 for CON-ATT. On raw RMSE (post hoc) the slope is $+1.84$ (circle) and $+1.90$\,cm per unit $s$. Three caveats apply. The slope is a coarse summary because $s$ is not linear. DOB's cutoff was tuned at $s{=}1$ and DOB applies no $\hat\zeta$ compensation, so the comparison mixes ``shared estimation'' with ``model feed-forward plus compensation''. The secondary LOC-M slope is also positive (formal $+1.34$, $+2.89$, same caveat), and LOC-M itself fails 4 episodes at $s{=}2.5$.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{fig_H2_raw_v3.pdf}
+\caption{The gap between DOB and CON-ATT grows with $s$ on both trajectories. DOB $-$ CON-ATT on the \emph{raw} payload tracking error (cm), mean with 95\% bootstrap CI over 40 seeds, recomputed from the per-episode results for this figure (post hoc). The preregistered metric scores failed episodes as 100\,cm and gives 31.8 and 27.2\,cm at $s{=}2.5$.}
+\label{fig:h2}
+\end{figure}
+
+\section{Packet-Loss Details}\label{app:loss}
+Each directed message is dropped independently with probability $p$, at $s{=}1$. At $p=0.5$, CON-ATT remains better than EKF-L ($-0.58$ and $-0.64$\,cm, adjusted $p=1.4\times10^{-4}$ and $8\times10^{-5}$), and the mean tracking error is 2.76 and 2.83\,cm (circle, figure-eight) versus 2.80 and 2.85\,cm without loss, both on 40 seeds. Loss acts on the relay rounds too (a stale message falls back to nominal geometry) and is implemented for CON-ATT only, so the comparison with EKF-L is not like for like. We state only that tracking error was not made worse at this rate, and claim neither general robustness nor a benefit from loss.
+
+The run at $p=0.5$ barely tests communication quality (post hoc). Packets are relayed two rounds per step and stay usable for 5 steps. In a stand-alone simulation of the message layer with the formal run's seeds (40 seeds, 1000 steps each), an agent holds a fresh packet from every teammate on 99.7\% of steps at $p=0.5$ and on 39\% of steps at $p=0.9$. Whether a packet is dropped does not depend on the flight state, so these fractions describe the formal run's message layer; they say nothing about estimation accuracy.
+
+Table~\ref{tab:loss} gives a descriptive run at $p=0.9$ on 20 seeds, compared with the lossless run on the same 20 seeds. Tracking error is close, but the parameter and tension-prediction errors are larger, and estimates are clipped more often (descriptive; at $p=0.5$ the share is unchanged, $1.34/1.33$ versus $1.31/1.33\times10^{-3}$, 40 seeds). The preregistration reads this as overconfidence of the consensus update under heavy loss. The code comments suspect that a skipped message leaves the mixing matrix not doubly stochastic, so the factor $N$ can count an agent's own new information up to $N$ times. This inference was not tested. This is no test of robustness to loss: similar tracking error with larger estimate errors should not be read as robustness. CON-ATT still leads EKF-L+GEO at $p=0.9$ ($-0.25$ and $-0.21$\,cm; 95\% CIs $[-0.48,-0.05]$ and $[-0.41,-0.04]$; descriptive, not corrected). The estimator gain therefore does not have to come from communication, which fits reading $D_b$ as the combined gain of estimator form, $\delta c$ estimation and exchange. Some packets still arrive within the allowed message age (5 steps) at $p=0.9$, so this is only an inference.
+
+\begin{table}[t]
+\centering
+\caption{Parameter and tension-prediction errors are larger and estimates are clipped more often at $p=0.9$ although tracking error is similar (descriptive). Circle/figure-eight, $s{=}1$, same 20 seeds, mean values; tracking error in cm. $\hat\zeta$ RMS error: RMS over the second half of the episode and over all quadrotors (dimensionless). $\delta m$ error: absolute error at $t{=}5$\,s, averaged over quadrotors (kg). Tension-prediction error: RMS error of the 0.5\,s-ahead tension prediction (N). Clipped estimates: share of (step, quadrotor) pairs where the $(\delta m,\delta c)$ estimate left its box ($\delta m\in[-0.7,1.0]$\,kg, $|\delta c_{x,y}|\le0.15$\,m) and was clipped before the controller; not thrust saturation.}
+\label{tab:loss}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lccc}
+\toprule
+Measure & Lossless & $p=0.9$ & Change \\
+\midrule
+Tracking error & 2.88/2.91 & 2.80/2.90 & -- \\
+$\hat\zeta$ RMS error & 0.0138/0.0140 & 0.0195/0.0194 & +41\%/+39\% \\
+$\delta m$ error & 0.0446/0.0476 & 0.0529/0.0542 & +19\%/+14\% \\
+Tension-pred. error & 0.238/0.241 & 0.292/0.292 & +23\%/+22\% \\
+Clipped est.\ ($10^{-3}$) & 1.38/1.37 & 3.10/3.20 & +124\%/+134\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Other Secondary Results and Disclosures}\label{app:other}
+At $s=1$ the 90\% CIs of CON-ATT $-$ CEN-ATT are $[-0.032,-0.010]$ (circle) and $[-0.043,-0.023]$\,cm (figure-eight). Both TOST tests pass at $\pm0.25$\,cm (adjusted $p<10^{-4}$) and at all four other levels (means from $-0.049$ to $-0.005$\,cm, so at most 0.05\,cm in magnitude), and at the $\pm0.5$\,cm sensitivity band. The result is limited to three quadrotors, ideal links and 2 iterations; it gives message sizes (Appendix~\ref{app:sim}) but measures no communication volume, and it cannot be extrapolated to larger teams. ``Distributed'' in this paper refers to the consensus layer only.
+
+On faster trajectories, at $s=1$ with trajectory speed 1.5 (hyper-parameters not re-tuned), $D_b$ is supported on both trajectories ($-0.37$, $-0.18$\,cm), while $D_a$ is rejected on the figure-eight only (circle $+0.18$, figure-eight $-0.22$\,cm) and is therefore not claimed.
+
+The Holm-adjusted $p$ of $D_a$ for $s\ge0.5$ ranges from 0.001 to 0.033, and four of them lie between 0.020 and 0.033 ($D_a$ at $s=1$ and $1.75$). For $D_b$ at $s=1.75$ and 2.5 the adjusted $p$ ranges from 0.07 to 0.21.
+
+Pilot estimates were optimistic: $D_a$ at $s=1$ was $-0.52/-0.50$\,cm in the pilot versus $-0.38/-0.42$\,cm in the formal run. The percentage in the abstract (about 11--14\%) refers to the non-artifact entries of $D_a$.
+
+The 3240 formal episodes also include two further methods that were run for description only and are not analysed: HYB, which adds a local residual-filter correction to the centralized estimator's model prediction, and ORACLE, which feeds the true parameters forward and is not treated as an upper bound.
+
+For scale (post hoc; ORACLE was run for description only), at $s{=}1$ the tracking error of ORACLE is 2.15 and 2.38\,cm (circle, figure-eight), that of EKF-L 3.34 and 3.48\,cm, and that of CON-ATT 2.80 and 2.85\,cm. CON-ATT thus closes 0.54 of the 1.20\,cm between EKF-L and ORACLE on the circle and 0.62 of 1.10\,cm on the figure-eight, about half. ORACLE is not an upper bound, so this is a reference for scale only.
+
+Some tuning-grid optima sit on a boundary: the LOC-M forgetting factor and the CEN-ATT prior scale.
+
+EKF-L+GEO shares teammate position and rope direction, which are architectural inputs and not consensus-shared physical quantities, so $D_a$ and $D_b$ are increments in one fixed order of adding information.
+
+The post hoc numbers in the appendices are computed by scripts in the public repository (\url{paper/workshop/scripts}).
+
+\end{document}

@@ -1,0 +1,30 @@
+{
+ "mppi": {
+  "K": 512,
+  "H": 20,
+  "dt_plan": 0.05,
+  "lam": 1.0,
+  "sigma": 0.4,
+  "noise_corr": 0.8,
+  "q_p": 100.0,
+  "q_v": 10.0,
+  "q_pT": 400.0,
+  "q_vT": 40.0,
+  "r_u": 0.02,
+  "thrust_lim": 24.0,
+  "tilt_lim_deg": 35.0,
+  "w_lim": 500.0,
+  "w_slack": 300.0,
+  "slack_margin": 0.03,
+  "wn": 12.2,
+  "zeta": 0.82,
+  "wn_z": 40.0,
+  "zeta_z": 1.0,
+  "w_moment": 1.0,
+  "use_measured_dir": true,
+  "cone_deg": 30.0
+ },
+ "selected_from": "results/p2a_oracle/sweep.json",
+ "rule": "max success rate, then min mean RMSE; ORACLE+nominal, trajs p2p/circle/fig8, seeds 1000-1002",
+ "frozen": true
+}
